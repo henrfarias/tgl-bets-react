@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import IUser from '../../Interfaces/IUser';
 
-const initialState = {usersList: [] as IUser[]}
+const initialState = [] as IUser[]
 
 const usersSlice = createSlice({
   name: 'users',
@@ -9,7 +9,7 @@ const usersSlice = createSlice({
   reducers: {
     registerUser: (state, action) => {
       console.log(action.payload);
-      state.usersList.push(action.payload);
+      state.push(action.payload);
     }
   }
 });

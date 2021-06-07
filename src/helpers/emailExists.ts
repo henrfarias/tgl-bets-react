@@ -1,15 +1,15 @@
 import IUser from '../Interfaces/IUser';
 
 const emailExists = (users: IUser[], email: string) => {
-  let exists = false;
+  let name = '';
 
   users.forEach((user) => {
     if (user.email === email) {
-      exists = true;
+      name = user.name;
     }
   });
 
-  return exists;
+  return name;
 };
 
 export default emailExists;

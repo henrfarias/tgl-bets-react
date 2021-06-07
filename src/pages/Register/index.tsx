@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { registerUser } from '../../store/reducers/users.reducer';
@@ -14,7 +14,7 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const users = useAppSelector((state) => state.users.usersList);
+  const users = useAppSelector((state) => state.users);
   const dispatch = useAppDispatch();
   const history = useHistory();
 
@@ -42,6 +42,7 @@ const Register: React.FC = () => {
     }
 
     dispatch(registerUser(newUser));
+    history.push('/');
     console.log('usuário cadastrado.');
   };
 
@@ -58,9 +59,6 @@ const Register: React.FC = () => {
   ) => {
     setPassword(event.target.value);
   };
-
-  useEffect(() => {
-  }, [users])
 
   return (
     <FormLayout title='Registration'>

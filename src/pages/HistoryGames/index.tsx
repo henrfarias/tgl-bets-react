@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { loadGames } from '../../store/reducers/games.reducer';
+
 import BetCard from '../../components/BetCard';
 import GameButton from '../../components/GameButton';
 import Layout from '../../components/Layout';
@@ -9,21 +12,7 @@ import HistoryGamesStyled, {
   NewBetButton,
   Title,
 } from './styles';
-
-const DUMMY_BUTTONS = [
-  {
-    type: 'Lotofácil',
-    color: '#7F3992',
-  },
-  {
-    type: 'Mega-Sena',
-    color: '#01AC66',
-  },
-  {
-    type: 'Quina',
-    color: '#F79C31',
-  },
-];
+import ITypes from '../../Interfaces/ITypes';
 
 const DUMMY_BETS = [
   {
@@ -50,11 +39,23 @@ const DUMMY_BETS = [
 ];
 
 const HistoryGames: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const gamesList = useAppSelector((state) => state.games); 
   const history = useHistory();
 
   const newBetHandler = () => {
     history.push('/game');
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch('./games.json')
+      const data: ITypes = await res.json();
+      const games = data.types;
+      (dispatch(loadGames(games)));
+    }
+    fetchData();
+  }, [dispatch])
 
   return (
     <Layout>
@@ -64,7 +65,7 @@ const HistoryGames: React.FC = () => {
         </Title>
         <FilterWrapper>
           <span>Filters</span>
-          {DUMMY_BUTTONS.map((button) => (
+          {gamesList.map((button) => (
             <GameButton game={button} />
           ))}
         </FilterWrapper>

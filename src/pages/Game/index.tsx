@@ -20,6 +20,7 @@ import ITypes from '../../Interfaces/ITypes';
 import IGames from '../../Interfaces/IGame';
 import IBet from '../../Interfaces/IBets';
 import sortNumbers from '../../helpers/sortNumbers';
+import { login } from '../../store/reducers/userLogged.reducer';
 
 const Game: React.FC = () => {
   const [gameNumbers, setGameNumbers] = useState<number[]>([]);
@@ -94,14 +95,19 @@ const Game: React.FC = () => {
   };
 
   useEffect(() => {
+    const {id, name} = JSON.parse(localStorage.getItem('logged')!) ; 
+    dispatch(login({id, name}));
+  }, [dispatch]);
+
+  useEffect(() => {
     const fetchData = async () => {
       const res = await fetch('./games.json');
       const data: ITypes = await res.json();
       const games = data.types;
       dispatch(loadGames(games));
     };
-    fetchData();
-  }, [dispatch]);
+    if (!gamesList.length) fetchData();
+  }, [dispatch, gamesList]);
 
   return (
     <Layout>
@@ -152,7 +158,11 @@ const Game: React.FC = () => {
           </GameFunctions>
         )}
       </GameWrapper>
-      <Cart cartItems={cartItems} onDelete={deleteItemHandler} />
+      <Cart
+        cartItems={cartItems}
+        onDelete={deleteItemHandler}
+        minCartSave={currentGame['min-cart-value']}
+      />
     </Layout>
   );
 };

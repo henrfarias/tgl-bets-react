@@ -58,8 +58,9 @@ const HistoryGames: React.FC = () => {
       const games = data.types;
       (dispatch(loadGames(games)));
     }
-    fetchData();
-  }, [dispatch])
+    if(!gamesList.length)
+      fetchData();
+  }, [dispatch, gamesList])
 
   return (
     <Layout>

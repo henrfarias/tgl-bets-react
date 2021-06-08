@@ -29,12 +29,12 @@ const Login: React.FC = () => {
       console.log('Preencha corretamente os dados.');
       return;
     };
-    if(!userLogged) {
+    if(!userLogged.name) {
       console.log('usuário não encontrado.');
       return;
     }
     history.push('/history-games');
-    dispatch(login(userLogged));
+    dispatch(login({id: userLogged.id, name: userLogged.name}));
   };
 
   const changeEmailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

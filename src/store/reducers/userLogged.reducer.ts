@@ -9,11 +9,11 @@ const userLoggedSlice = createSlice({
     login: (state, action) => {
       state.logged = true;
       state.name = action.payload;
-      console.log(state.name, state.logged);
+      localStorage.setItem('logged', JSON.stringify(state));
     },
     logout: (state) => {
       state = initialState;
-      console.log(state.name, state.logged);
+      localStorage.setItem('logged', JSON.stringify(state));
     }
   }
 });

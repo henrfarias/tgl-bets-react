@@ -5,7 +5,7 @@ interface IGames {
   price: number;
   'max-number': number;
   color: string;
-  'min-cart-value': 30;
+  'min-cart-value': number;
 }
 
 export default IGames;

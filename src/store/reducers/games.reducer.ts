@@ -11,7 +11,6 @@ const GamesSlice = createSlice({
       action.payload.forEach((game: IGames) => {
         state.push(game);
       })
-      console.log(state);
     }
   }
 });

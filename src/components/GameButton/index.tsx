@@ -7,9 +7,13 @@ interface IGameButton {
   description?: string;
 }
 
-const GameButton: React.FC<{game: IGameButton}> = ({ game }) => {
+const GameButton: React.FC<{
+  game: IGameButton;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  current?: boolean;
+}> = ({ game, current, onClick }) => {
   return (
-    <GameButtonStyled color={game.color}>
+    <GameButtonStyled current={current} color={game.color} onClick={onClick}>
       {game.type}
     </GameButtonStyled>
   );

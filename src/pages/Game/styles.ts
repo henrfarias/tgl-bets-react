@@ -79,10 +79,17 @@ export const ButtonFunction = styled(Button)`
 `;
 
 export const AddToCart = styled(Button)`
+  display: flex;
+  align-items: center;
   margin-left: auto;
   background-color: var(--button);
   color: var(--white);
   border: none;
+
+  img {
+    margin-right: 1rem;
+    pointer-events: none;
+  }
 
   &:hover {
     filter: brightness(0.8);

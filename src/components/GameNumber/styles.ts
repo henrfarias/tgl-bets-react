@@ -30,7 +30,7 @@ export const Checkbox = styled.input`
   height: 0;
 
   &:checked ~ ${Label} {
-    background-color: var(--button);
+    background-color: ${props => props.color};
   }
 `;
 

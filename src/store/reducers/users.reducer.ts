@@ -10,7 +10,6 @@ const usersSlice = createSlice({
   initialState,
   reducers: {
     registerUser: (state, action) => {
-      console.log(action.payload);
       state.push(action.payload);
     },
   },

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadGames } from '../../store/reducers/games.reducer';
+import createId from '../../helpers/createId';
 
 import BetCard from '../../components/BetCard';
 import GameButton from '../../components/GameButton';
@@ -16,22 +17,25 @@ import ITypes from '../../Interfaces/ITypes';
 
 const DUMMY_BETS = [
   {
+    id: 12121212,
     type: 'Lotofácil',
-    numbers: [1, 2, 4, 6, 10, 20, 21, 25],
+    numbers: [1, 2, 4, 6, 10, 20, 21, 25].toString(),
     price: 2.5,
     date: '2020-11-10',
     color: '#7F3992',
   },
   {
+    id: 232323232,
     type: 'Mega-Sena',
-    numbers: [1, 2, 4, 6, 10, 20, 21, 25],
+    numbers: [1, 2, 4, 6, 10, 20, 21, 25].toString(),
     price: 2.5,
     date: '2021-01-04',
     color: '#01AC66',
   },
   {
+    id: 454545454,
     type: 'Quina',
-    numbers: [1, 2, 4, 6, 10, 20, 21, 25],
+    numbers: [1, 2, 4, 6, 10, 20, 21, 25].toString(),
     price: 2.5,
     date: '2021-04-04',
     color: '#F79C31',
@@ -66,12 +70,12 @@ const HistoryGames: React.FC = () => {
         <FilterWrapper>
           <span>Filters</span>
           {gamesList.map((button) => (
-            <GameButton game={button} />
+            <GameButton key={createId()} game={button} />
           ))}
         </FilterWrapper>
         <BetsWrapper>
           {DUMMY_BETS.map((bet) => (
-            <BetCard bet={bet} />
+            <BetCard key={createId()} bet={bet} />
           ))}
         </BetsWrapper>
       </HistoryGamesStyled>

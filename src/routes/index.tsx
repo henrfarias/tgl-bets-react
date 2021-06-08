@@ -7,7 +7,9 @@ import Register from '../pages/Register';
 import ResetPassword from '../pages/ResetPassword';
 
 const Routes = () => {
+  const statusLog = localStorage.getItem('logged');
   const isLogged = useAppSelector((state) => state.logged.logged);
+  const loggin = statusLog ? JSON.parse(statusLog).logged : isLogged;
 
   return (
     <BrowserRouter>
@@ -16,10 +18,10 @@ const Routes = () => {
         <Route path='/register' component={Register} />
         <Route path='/reset-password' component={ResetPassword} />
         <Route path='/history-games'>
-          {isLogged ? <HistoryGames /> : <Redirect to='/' exact />}
+          {loggin ? <HistoryGames /> : <Redirect to='/' exact />}
         </Route>
         <Route path='/game'>
-          {isLogged ? <Game /> : <Redirect to='/' exact />}
+          {loggin ? <Game /> : <Redirect to='/' exact />}
         </Route>
       </Switch>
     </BrowserRouter>

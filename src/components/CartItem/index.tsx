@@ -9,14 +9,14 @@ import CartItemStyled, {
   TypeBet,
 } from "./styles";
 
-const CartItem: React.FC<{ bet: IBets }> = ({ bet }) => {
+const CartItem: React.FC<{ bet: IBets, onDelete: (id: number) => void }> = ({ bet, onDelete }) => {
   return (
     <CartItemStyled>
-      <DeleteCartItem>
+      <DeleteCartItem onClick={() => onDelete(bet.id)}>
         <img src="./icons/trash.svg" alt="Deletar item" />
       </DeleteCartItem>
       <CartBody color={bet.color}>
-        <NumbersOfBet>{bet.numbers.toString()}</NumbersOfBet>
+        <NumbersOfBet>{bet.numbers}</NumbersOfBet>
         <InfoBet>
           <TypeBet>{bet.type}</TypeBet>
           <Price>R${bet.price.toFixed(2).replace(".", ",")}</Price>

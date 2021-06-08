@@ -14,6 +14,7 @@ import HistoryGamesStyled, {
   Title,
 } from './styles';
 import ITypes from '../../Interfaces/ITypes';
+import { login } from '../../store/reducers/userLogged.reducer';
 
 const DUMMY_BETS = [
   {
@@ -50,6 +51,11 @@ const HistoryGames: React.FC = () => {
   const newBetHandler = () => {
     history.push('/game');
   };
+
+  useEffect(() => {
+    const {id, name} = JSON.parse(localStorage.getItem('logged')!) ; 
+    dispatch(login({id, name}));
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {

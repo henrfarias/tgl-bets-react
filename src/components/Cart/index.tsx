@@ -35,6 +35,7 @@ const Cart: React.FC<{
       return;
     }
     dispatch(addGamesInHistory({ id: currentUserId, bets: cartItems }));
+    notify('success', '🎉 Jogos salvos!');
     history.push('/history-games');
   };
 

@@ -1,9 +1,8 @@
 import styled from "styled-components";
 
 const CartItemStyled = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  display: grid;
+  grid-template-columns: 5rem 1fr;
   margin-top: 3.2rem;
   min-height: 5rem; 
 `;

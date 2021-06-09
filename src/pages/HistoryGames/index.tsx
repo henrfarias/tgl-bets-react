@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadGames } from '../../store/reducers/games.reducer';
@@ -15,58 +15,58 @@ import HistoryGamesStyled, {
 } from './styles';
 import ITypes from '../../Interfaces/ITypes';
 import { login } from '../../store/reducers/userLogged.reducer';
-
-const DUMMY_BETS = [
-  {
-    id: 12121212,
-    type: 'Lotofácil',
-    numbers: [1, 2, 4, 6, 10, 20, 21, 25].toString(),
-    price: 2.5,
-    date: '2020-11-10',
-    color: '#7F3992',
-  },
-  {
-    id: 232323232,
-    type: 'Mega-Sena',
-    numbers: [1, 2, 4, 6, 10, 20, 21, 25].toString(),
-    price: 2.5,
-    date: '2021-01-04',
-    color: '#01AC66',
-  },
-  {
-    id: 454545454,
-    type: 'Quina',
-    numbers: [1, 2, 4, 6, 10, 20, 21, 25].toString(),
-    price: 2.5,
-    date: '2021-04-04',
-    color: '#F79C31',
-  },
-];
+import IBet from '../../Interfaces/IBets';
 
 const HistoryGames: React.FC = () => {
+  const [currentFilter, setCurrentFilter] = useState('');
+  const [filteredGames, setFilteredGames] = useState<IBet[]>([]);
   const dispatch = useAppDispatch();
-  const gamesList = useAppSelector((state) => state.games); 
+  const gamesList = useAppSelector((state) => state.games);
+  const userLoggedinId = useAppSelector((state) => state.logged.id);
+  const userLogged = useAppSelector((state) =>
+    state.users.find((user) => user.id === userLoggedinId)
+  );
   const history = useHistory();
 
   const newBetHandler = () => {
     history.push('/game');
   };
 
+  const filterHandler = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    filter: string
+  ) => {
+    if(filter === currentFilter) 
+      return setCurrentFilter('');
+    setCurrentFilter(filter);
+  };
+
   useEffect(() => {
-    const {id, name} = JSON.parse(localStorage.getItem('logged')!) ; 
-    dispatch(login({id, name}));
+    const games = userLogged?.history.filter((bet) => {
+      if(currentFilter === '')
+        return true;
+      if(bet.type === currentFilter) {
+        return true;
+      }
+      return false; 
+    })!;
+    setFilteredGames(games);
+  }, [currentFilter, userLogged])
+
+  useEffect(() => {
+    const { id, name } = JSON.parse(localStorage.getItem('logged')!);
+    dispatch(login({ id, name }));
   }, [dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('./games.json')
+      const res = await fetch('./games.json');
       const data: ITypes = await res.json();
       const games = data.types;
-      (dispatch(loadGames(games)));
-    }
-    if(!gamesList.length)
-      fetchData();
-  }, [dispatch, gamesList])
+      dispatch(loadGames(games));
+    };
+    if (!gamesList.length) fetchData();
+  }, [dispatch, gamesList]);
 
   return (
     <Layout>
@@ -76,12 +76,20 @@ const HistoryGames: React.FC = () => {
         </Title>
         <FilterWrapper>
           <span>Filters</span>
-          {gamesList.map((button) => (
-            <GameButton key={createId()} game={button} />
-          ))}
+          {gamesList.map((button) => {
+            const active = button.type === currentFilter;
+            return (
+              <GameButton
+                key={createId()}
+                game={button}
+                onClick={(event) => filterHandler(event, button.type)}
+                current={active}
+              />
+            );
+          })}
         </FilterWrapper>
         <BetsWrapper>
-          {DUMMY_BETS.map((bet) => (
+          {filteredGames.map((bet) => (
             <BetCard key={createId()} bet={bet} />
           ))}
         </BetsWrapper>

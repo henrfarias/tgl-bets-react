@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+interface saveButton {
+  isDisabled: boolean;
+}
+
 const CartStyled = styled.section`
   display: flex;
   flex-direction: column;
@@ -46,7 +50,7 @@ export const CartTotal = styled.span`
   margin-left: 1.9rem;
 `;
 
-export const SaveCartButton = styled.button`
+export const SaveCartButton = styled.button<saveButton>`
   margin-top: auto;
   font-size: 3.5rem;
   padding: 3rem 0;
@@ -54,16 +58,11 @@ export const SaveCartButton = styled.button`
   color: var(--button);
   background-color: var(--background-cart);
   border: 1px solid var(--border-cart);
-  cursor: pointer;
+  cursor: ${props => props.isDisabled ? 'not-allowed' : 'pointer'};
   transition: all 200ms;
 
-  &:disabled {
-    cursor: not-allowed;
-    filter: grayscale(1);
-  }
-
-  &:not(:disabled):hover {
-    filter: brightness(0.9);
+  &:hover {
+    filter: ${props => props.isDisabled ? 'none' : 'brightness(0.9)'};
   }
 `;
 

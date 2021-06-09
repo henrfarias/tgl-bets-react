@@ -1,4 +1,5 @@
 import React from "react";
+import arrayToString from "../../helpers/arrayToString";
 import IBets from "../../Interfaces/IBets";
 import CartItemStyled, {
   CartBody,
@@ -16,7 +17,7 @@ const CartItem: React.FC<{ bet: IBets, onDelete: (id: number) => void }> = ({ be
         <img src="./icons/trash.svg" alt="Deletar item" />
       </DeleteCartItem>
       <CartBody color={bet.color}>
-        <NumbersOfBet>{bet.numbers}</NumbersOfBet>
+        <NumbersOfBet>{arrayToString(bet.numbers)}</NumbersOfBet>
         <InfoBet>
           <TypeBet>{bet.type}</TypeBet>
           <Price>R${bet.price.toFixed(2).replace(".", ",")}</Price>

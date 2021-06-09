@@ -1,7 +1,7 @@
 interface IBet {
   id: number;
   type: string;
-  numbers: string;
+  numbers: number[];
   price: number;
   date?: string;
   color: string;

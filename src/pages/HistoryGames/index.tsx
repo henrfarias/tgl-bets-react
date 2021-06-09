@@ -37,22 +37,21 @@ const HistoryGames: React.FC = () => {
     event: React.MouseEvent<HTMLButtonElement>,
     filter: string
   ) => {
-    if(filter === currentFilter) 
-      return setCurrentFilter('');
+    if (filter === currentFilter) return setCurrentFilter('');
     setCurrentFilter(filter);
   };
 
   useEffect(() => {
-    const games = userLogged?.history.filter((bet) => {
-      if(currentFilter === '')
-        return true;
-      if(bet.type === currentFilter) {
-        return true;
-      }
-      return false; 
-    }) || [];
+    const games =
+      userLogged?.history.filter((bet) => {
+        if (currentFilter === '') return true;
+        if (bet.type === currentFilter) {
+          return true;
+        }
+        return false;
+      }) || [];
     setFilteredGames(games);
-  }, [currentFilter, userLogged])
+  }, [currentFilter, userLogged]);
 
   useEffect(() => {
     const { id, name } = JSON.parse(localStorage.getItem('logged')!);

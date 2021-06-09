@@ -20,6 +20,12 @@ const GameButtonStyled = styled.button<currentButton>`
     color: var(--white);
     background-color: ${(props) => props.color}; 
   }
+
+  @media(max-width: 600px) {
+    margin-top: 2rem;
+    width: 60%;
+    height: 5rem;
+  }
 `;
 
 export default GameButtonStyled;

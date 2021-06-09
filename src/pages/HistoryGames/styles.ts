@@ -21,6 +21,22 @@ export const FilterWrapper = styled.div`
     font-size: 1.7rem;
     color: var(--text);
   }
+
+  @media(max-width: 1400px) {
+    display: block;
+    margin-top: 1rem;
+    margin-left: 0;
+  }
+
+  @media(max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    span {
+      margin-left: 2rem;
+    }
+  }
 `;
 
 export const BetsWrapper = styled.div`

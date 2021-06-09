@@ -13,6 +13,11 @@ const CartStyled = styled.section`
   border-radius: 10px;
   border: 1px solid var(--border-cart);
   box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+
+  @media(max-width: 1200px) {
+    margin: 3rem auto 0;
+    width: 90%;
+  }
 `;
 
 export const Title = styled.h2`

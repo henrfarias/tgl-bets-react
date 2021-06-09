@@ -57,6 +57,12 @@ export const NewBetButton = styled(Button)`
   img {
     margin-left: 1.1rem;
   }
+
+  @media(max-width: 1200px) {
+    margin-top: 2rem;
+    margin-right: 2rem;
+    align-self: flex-end;
+  }
 `;
 
 export default HistoryGamesStyled;

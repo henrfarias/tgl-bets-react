@@ -3,6 +3,7 @@ import styled from "styled-components";
 const GameWrapper = styled.section`
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 `;
 
 export const Title = styled.h2`
@@ -26,6 +27,27 @@ export const ChooseGame = styled.div`
     margin-left: 0;
     margin-right: 2.5rem;
   }
+
+  @media(max-width: 600px) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    h3 {
+      align-self: flex-start;
+      margin-left: 3.3rem;
+    }
+
+    button {
+      width: 80%;
+      height: 5rem;
+      
+      &:not(:last-child) {
+        margin-bottom: 2rem;
+      }
+    }
+  }
 `;
 
 export const Description = styled.div`
@@ -46,12 +68,23 @@ export const GameBoard = styled.div`
   display: flex;  
   flex-wrap: wrap;
   margin-top: 2.7rem;
+
+  @media(max-width: 600px) {
+    justify-content: center;
+  }
 `;
 
 export const GameFunctions = styled.div`
   display: flex;
   margin-top: 2.4rem;
-  margin-bottom: 14.55rem;
+  margin-bottom: 4rem;
+
+  @media(max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    width: 80%;
+  }
 `;
 
 const Button = styled.button`
@@ -76,6 +109,17 @@ export const ButtonFunction = styled(Button)`
     background-color: var(--button);
     color: var(--white);
   }
+
+  @media(max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    &:first-child {
+      margin-right: 0;
+    }
+  }
 `;
 
 export const AddToCart = styled(Button)`
@@ -93,6 +137,12 @@ export const AddToCart = styled(Button)`
 
   &:hover {
     filter: brightness(0.8);
+  }
+
+  @media(max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
   }
 `;
 

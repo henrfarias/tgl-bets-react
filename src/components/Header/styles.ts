@@ -5,6 +5,10 @@ const HeaderStyled = styled.header`
   display: flex;
   align-items: center;
   border-bottom: 2px solid var(--border);
+
+  @media(max-width: 430px) {
+    flex-direction: column; 
+  }
 `;
 
 export const Logo = styled.h1`
@@ -16,6 +20,14 @@ export const Logo = styled.h1`
   font-size: 4.4rem;
   font-style: italic;
   height: 100%;
+
+  @media(max-width: 768px) {
+    margin-left: 3rem;
+  }
+
+  @media(max-width: 430px) {
+    margin: 0;
+  }
 `;
 
 export const Decoration = styled.div`
@@ -32,6 +44,12 @@ export const AccountButton = styled(Button)`
   color: var(--strong-text);
   padding: 2.8rem;
   font-size: 2rem;
+
+  @media(max-width: 430px) {
+    margin-top: 2rem;
+    width: 100%;
+    border-bottom: 2px solid var(--border);
+  }
 `;
 
 export const LogoutButton = styled(Button)`
@@ -44,6 +62,19 @@ export const LogoutButton = styled(Button)`
 
   img {
     margin-left: 2rem;
+  }
+
+  @media(max-width: 768px) {
+    margin-right: 3rem;
+  }
+
+  @media(max-width: 430px) {
+    margin-top: 2rem;
+    text-align: center;
+    padding-left: 8rem;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
   }
 `;
 

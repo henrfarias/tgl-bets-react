@@ -9,6 +9,7 @@ const FooterStyled = styled.footer`
   padding: 3rem 0;
   text-align: center;
   border-top: 2px solid var(--border);
+  margin-top: 10.55rem;
 `;
 
 export default FooterStyled

@@ -16,6 +16,7 @@ import HistoryGamesStyled, {
 import ITypes from '../../Interfaces/ITypes';
 import { login } from '../../store/reducers/userLogged.reducer';
 import IBet from '../../Interfaces/IBets';
+import Empty from '../../components/Empty';
 
 const HistoryGames: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState('');
@@ -49,7 +50,7 @@ const HistoryGames: React.FC = () => {
         return true;
       }
       return false; 
-    })!;
+    }) || [];
     setFilteredGames(games);
   }, [currentFilter, userLogged])
 
@@ -89,6 +90,7 @@ const HistoryGames: React.FC = () => {
           })}
         </FilterWrapper>
         <BetsWrapper>
+          {filteredGames.length === 0 && <Empty />}
           {filteredGames.map((bet) => (
             <BetCard key={createId()} bet={bet} />
           ))}

@@ -30,6 +30,10 @@ const SloganStyled = styled.div`
     text-transform: uppercase;
     line-height: 8rem;
   }
+
+  @media(max-width: 1000px) {
+    height: 100vh;
+  }
 `;
 
 export default SloganStyled;

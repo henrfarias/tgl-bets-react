@@ -1,7 +1,7 @@
 import React from 'react';
 import BetCardStyled, { CardDecoration } from './style';
 import IBet from '../../Interfaces/IBets';
-
+import dateFormated from '../../helpers/dateFormated';
 
 const BetCard: React.FC<{ bet: IBet }> = ({ bet }) => {
   return (
@@ -9,7 +9,8 @@ const BetCard: React.FC<{ bet: IBet }> = ({ bet }) => {
       <CardDecoration color={bet.color} />
       <strong>{bet.numbers.toString()}</strong>
       <span>
-        {bet.date} - ({`R$${bet.price.toFixed(2)}`.replace('.', ',')})
+        {bet.date && dateFormated(bet.date)} - (
+        {`R$${bet.price.toFixed(2)}`.replace('.', ',')})
       </span>
       <h3>{bet.type}</h3>
     </BetCardStyled>

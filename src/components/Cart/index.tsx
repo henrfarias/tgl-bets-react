@@ -27,13 +27,16 @@ const Cart: React.FC<{
 
   const saveCartItems = () => {
     if (total < minCartSave) {
-      notify('error' ,`O valor mínimo de compra é R$${minCartSave}`);
+      notify('error', `O valor mínimo de compra é R$${minCartSave}`);
       return;
     }
     if (minCartSave === 0) {
       notify('error', 'Escolha o jogo para começar.');
       return;
     }
+    cartItems.map(
+      (item) => (item.date = new Date().toISOString())
+    );
     dispatch(addGamesInHistory({ id: currentUserId, bets: cartItems }));
     notify('success', '🎉 Jogos salvos!');
     history.push('/history-games');

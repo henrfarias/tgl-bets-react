@@ -26,6 +26,10 @@ const CardStyled = styled.div`
       color: #3454D1;
     }
   }
+
+  @media(max-width: 400px) {
+    width: 100vw;
+  }
 `;
 
 export default CardStyled;

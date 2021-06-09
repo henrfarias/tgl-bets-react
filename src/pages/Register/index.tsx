@@ -8,6 +8,9 @@ import Input from '../../components/Input';
 import Card from '../../components/Layout/Card';
 import FormLayout from '../../components/Layout/FormLayout';
 import emailExists from '../../helpers/emailExists';
+import createId from '../../helpers/createId';
+import IUser from '../../Interfaces/IUser';
+import notify from '../../helpers/toast';
 
 const Register: React.FC = () => {
   const [name, setName] = useState('');
@@ -28,22 +31,24 @@ const Register: React.FC = () => {
       !email.match(/^[A-Za-z][\w.\d]+@\w+\.\w{2,3}(?:\.\w{2})?$/g) ||
       password.trim().length < 8
     ) {
-      console.log('Preencha corretamente os dados.');
+      notify('error', 'Preencha corretamente os dados.');
       return;
     }
-    const newUser = {
+    const newUser: IUser = {
+      id: createId(),
       name,
       email,
       password,
+      history: []
     };
-    if (emailExists(users, newUser.email)) {
-      console.log('email existente.')
+    if (emailExists(users, newUser.email).name) {
+      notify('error', 'Email existente.')
       return;
     }
 
     dispatch(registerUser(newUser));
     history.push('/');
-    console.log('usuário cadastrado.');
+    notify('success', 'Usuário cadastrado.');
   };
 
   const changeNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

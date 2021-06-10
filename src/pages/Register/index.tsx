@@ -26,10 +26,14 @@ const Register: React.FC = () => {
   };
 
   const registerHandler = () => {
+    if (password.trim().length < 8) {
+      notify('error', 'Sua senha precisa ter 8 ou mais caracteres.');
+      return;
+    }
+
     if (
       name.trim() === '' ||
-      !email.match(/^[A-Za-z][\w.\d]+@\w+\.\w{2,3}(?:\.\w{2})?$/g) ||
-      password.trim().length < 8
+      !email.match(/^[A-Za-z][\w.\d]+@\w+\.\w{2,3}(?:\.\w{2})?$/g)
     ) {
       notify('error', 'Preencha corretamente os dados.');
       return;
@@ -39,10 +43,10 @@ const Register: React.FC = () => {
       name,
       email,
       password,
-      history: []
+      history: [],
     };
     if (emailExists(users, newUser.email).name) {
-      notify('error', 'Email existente.')
+      notify('error', 'Email existente.');
       return;
     }
 

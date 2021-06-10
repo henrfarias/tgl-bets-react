@@ -21,21 +21,22 @@ const Login: React.FC = () => {
     history.push('/register');
   };
 
-  const loginHandler = async () => {
-    const userLogged = emailExists(users, email);
+  const loginHandler = () => {
+    const userExists = emailExists(users, email);
     if (!email.match(/^[A-Za-z][\w.\d]+@\w+\.\w{2,3}(?:\.\w{2})?$/g)) {
       notify('error', 'Digite um email válido.');
       return;
     }
     if (password.trim().length < 8) {
-      notify('error', 'Sua senha precisa ter 8 ou mais caracteres.');
+      notify('error', 'Senha inválida. Sua senha tem 8 ou mais caracteres.');
+      return;
     }
-    if (!userLogged.name) {
+    if (!userExists.name) {
       notify('error', 'Usuário não encontrado.');
       return;
     }
     history.push('/history-games');
-    dispatch(login({ id: userLogged.id, name: userLogged.name }));
+    dispatch(login({ id: userExists.id, name: userExists.name }));
   };
 
   const changeEmailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -24,11 +24,9 @@ const usersSlice = createSlice({
       state,
       action: PayloadAction<{ id: number; bets: IBets[] }>
     ) => {
-      const userIndex = current(state).findIndex(
-        (user) => {
-         return user.id === action.payload.id
-        }
-        );
+      const userIndex = current(state).findIndex((user) => {
+        return user.id === action.payload.id;
+      });
       action.payload.bets.forEach((bet) => {
         state[userIndex].history.unshift(bet);
       });

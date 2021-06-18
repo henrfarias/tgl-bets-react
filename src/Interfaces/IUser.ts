@@ -2,10 +2,9 @@ import IBet from "./IBets";
 
 interface IUser {
   id: number;
-  name: string;
+  username: string;
   email: string;
-  password: string;
-  history: IBet[];
+  bets: IBet[];
 }
 
 export default IUser;

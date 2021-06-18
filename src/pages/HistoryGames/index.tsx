@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadGames } from '../../store/reducers/games.reducer';
-import createId from '../../helpers/createId';
 
 import BetCard from '../../components/BetCard';
 import GameButton from '../../components/GameButton';
@@ -18,16 +17,14 @@ import HistoryGamesStyled, {
 import IGame from '../../Interfaces/IGame';
 import IBet from '../../Interfaces/IBets';
 import Empty from '../../components/Empty';
+import { userLogged } from '../../store/reducers/users.reducer';
 
 const HistoryGames: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState('');
   const [filteredGames, setFilteredGames] = useState<IBet[]>([]);
   const dispatch = useAppDispatch();
   const gamesList = useAppSelector((state) => state.games);
-  const userLoggedinId = useAppSelector((state) => state.logged.id);
-  const userLogged = useAppSelector((state) =>
-    state.users.find((user) => user.id === userLoggedinId)
-  );
+  const userLoggedIn = useAppSelector((state) => state.user );
   const history = useHistory();
 
   const newBetHandler = () => {
@@ -43,24 +40,39 @@ const HistoryGames: React.FC = () => {
   };
 
   useEffect(() => {
+    try {
+      const fetchUser = async () => {
+        const response = await api.get('/users')
+        const user = response.data; 
+        dispatch(userLogged(user));
+       }
+      fetchUser();
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  }, [dispatch, history])
+
+  useEffect(() => {
+    if(!userLoggedIn.email)
+      return;
     const games =
-      userLogged?.history.filter((bet) => {
+      userLoggedIn.bets?.filter((bet) => {
         if (currentFilter === '') return true;
-        if (bet.type === currentFilter) {
+        if (bet.game?.type === currentFilter) {
           return true;
         }
         return false;
       }) || [];
     setFilteredGames(games);
-  }, [currentFilter, userLogged]);
+  }, [currentFilter, userLoggedIn]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchGames = async () => {
       const response = await api.get('games')
       const games: IGame[] = await response.data.data;
       dispatch(loadGames(games))
     }
-    if (!gamesList.length) fetchData();
+    if (!gamesList.length) fetchGames();
   }, [dispatch, gamesList]);
 
   return (
@@ -75,7 +87,7 @@ const HistoryGames: React.FC = () => {
             const active = button.type === currentFilter;
             return (
               <GameButton
-                key={createId()}
+                key={button.id}
                 game={button}
                 onClick={(event) => filterHandler(event, button.type)}
                 current={active}
@@ -86,7 +98,7 @@ const HistoryGames: React.FC = () => {
         <BetsWrapper>
           {filteredGames.length === 0 && <Empty />}
           {filteredGames.map((bet) => (
-            <BetCard key={createId()} bet={bet} />
+            <BetCard key={bet.id} bet={bet} />
           ))}
         </BetsWrapper>
       </HistoryGamesStyled>

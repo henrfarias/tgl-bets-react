@@ -7,6 +7,8 @@ interface IGames {
   'max-number': number;
   color: string;
   'min-cart-value': number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export default IGames;

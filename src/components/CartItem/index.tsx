@@ -21,7 +21,7 @@ const CartItem: React.FC<{ bet: IBets, onDelete: (bet: IBet) => void }> = ({ bet
         <NumbersOfBet>{arrayToString(bet.numbers)}</NumbersOfBet>
         <InfoBet>
           <TypeBet>{bet.type}</TypeBet>
-          <Price>R${bet.price.toFixed(2).replace(".", ",")}</Price>
+          <Price>R${bet.current_price.toFixed(2).replace(".", ",")}</Price>
         </InfoBet>
       </CartBody>
     </CartItemStyled>

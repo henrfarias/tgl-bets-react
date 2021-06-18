@@ -1,12 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import usersReducer from './reducers/users.reducer';
-import userLoggedReducer from './reducers/userLogged.reducer';
 import gamesReducer from './reducers/games.reducer';
 
 const store = configureStore({
   reducer: {
-    users: usersReducer,
-    logged: userLoggedReducer,
+    user: usersReducer,
     games: gamesReducer,
   },
 });

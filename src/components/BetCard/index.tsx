@@ -6,14 +6,14 @@ import arrayToString from '../../helpers/arrayToString';
 
 const BetCard: React.FC<{ bet: IBet }> = ({ bet }) => {
   return (
-    <BetCardStyled color={bet.color}>
-      <CardDecoration color={bet.color} />
+    <BetCardStyled color={bet.game?.color}>
+      <CardDecoration color={bet.game?.color} />
       <strong>{arrayToString(bet.numbers)}</strong>
       <span>
-        {bet.date && dateFormated(bet.date)} - (
-        {`R$${bet.price.toFixed(2)}`.replace('.', ',')})
+        {bet.created_at && dateFormated(bet.created_at)} - (
+        {`R$${bet.current_price.toFixed(2)}`.replace('.', ',')})
       </span>
-      <h3>{bet.type}</h3>
+      <h3>{bet.game?.type}</h3>
     </BetCardStyled>
   );
 };

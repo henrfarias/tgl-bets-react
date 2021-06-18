@@ -1,7 +1,5 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { useAppDispatch } from '../../store/hooks';
-import { logout } from '../../store/reducers/userLogged.reducer';
 
 import HeaderStyled, {
   Logo,
@@ -11,7 +9,6 @@ import HeaderStyled, {
 } from './styles';
 
 const Header: React.FC = () => {
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const toAccountHandler = () => {
@@ -19,7 +16,7 @@ const Header: React.FC = () => {
   };
   
   const toLogoutHandler = () => {
-    dispatch(logout());
+    sessionStorage.setItem('token', '');
     history.push('/');
   };
 

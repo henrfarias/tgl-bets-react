@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import api from '../../services/axios';
 import createId from '../../helpers/createId';
@@ -21,7 +22,6 @@ import GameWrapper, {
 import IGame from '../../Interfaces/IGame';
 import IBet from '../../Interfaces/IBets';
 import sortNumbers from '../../helpers/sortNumbers';
-import { login } from '../../store/reducers/userLogged.reducer';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Game: React.FC = () => {
@@ -38,6 +38,7 @@ const Game: React.FC = () => {
     'min-cart-value': 0,
     'max-number': 0,
   });
+  const history = useHistory();
   const dispatch = useAppDispatch();
   const gamesList = useAppSelector((state) => state.games);
 
@@ -90,7 +91,7 @@ const Game: React.FC = () => {
       const { color, price, type } = currentGame;
       setCartItems((prevState) => [
         ...prevState,
-        { type, color, numbers, price, game_id: currentGame.id },
+        { type, color, numbers, current_price: price, game_id: currentGame.id },
       ]);
       setChosenNumbers([]);
       notify('success', '🎉 Adicionado ao carrinho!');
@@ -111,18 +112,13 @@ const Game: React.FC = () => {
   };
 
   useEffect(() => {
-    const { id, name } = JSON.parse(localStorage.getItem('logged')!);
-    dispatch(login({ id, name }));
-  }, [dispatch]);
-
-  useEffect(() => {
     const fetchData = async () => {
       const response = await api.get('games');
       const games: IGame[] = await response.data.data;
       dispatch(loadGames(games));
     };
     if (!gamesList.length) fetchData();
-  }, [dispatch, gamesList]);
+  }, [dispatch, gamesList, history]);
 
   return (
     <>

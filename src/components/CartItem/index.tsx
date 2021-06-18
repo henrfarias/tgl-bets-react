@@ -1,5 +1,6 @@
 import React from "react";
 import arrayToString from "../../helpers/arrayToString";
+import IBet from "../../Interfaces/IBets";
 import IBets from "../../Interfaces/IBets";
 import CartItemStyled, {
   CartBody,
@@ -10,10 +11,10 @@ import CartItemStyled, {
   TypeBet,
 } from "./styles";
 
-const CartItem: React.FC<{ bet: IBets, onDelete: (id: number) => void }> = ({ bet, onDelete }) => {
+const CartItem: React.FC<{ bet: IBets, onDelete: (bet: IBet) => void }> = ({ bet, onDelete }) => {
   return (
     <CartItemStyled>
-      <DeleteCartItem onClick={() => onDelete(bet.id)}>
+      <DeleteCartItem onClick={() => onDelete(bet)}>
         <img src="./icons/trash.svg" alt="Deletar item" />
       </DeleteCartItem>
       <CartBody color={bet.color}>

@@ -7,14 +7,15 @@ import createId from '../../helpers/createId';
 import BetCard from '../../components/BetCard';
 import GameButton from '../../components/GameButton';
 import Layout from '../../components/Layout';
+import api from '../../services/axios';
+
 import HistoryGamesStyled, {
   BetsWrapper,
   FilterWrapper,
   NewBetButton,
   Title,
 } from './styles';
-import ITypes from '../../Interfaces/ITypes';
-import { login } from '../../store/reducers/userLogged.reducer';
+import IGame from '../../Interfaces/IGame';
 import IBet from '../../Interfaces/IBets';
 import Empty from '../../components/Empty';
 
@@ -54,17 +55,11 @@ const HistoryGames: React.FC = () => {
   }, [currentFilter, userLogged]);
 
   useEffect(() => {
-    const { id, name } = JSON.parse(localStorage.getItem('logged')!);
-    dispatch(login({ id, name }));
-  }, [dispatch]);
-
-  useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('./games.json');
-      const data: ITypes = await res.json();
-      const games = data.types;
-      dispatch(loadGames(games));
-    };
+      const response = await api.get('games')
+      const games: IGame[] = await response.data.data;
+      dispatch(loadGames(games))
+    }
     if (!gamesList.length) fetchData();
   }, [dispatch, gamesList]);
 

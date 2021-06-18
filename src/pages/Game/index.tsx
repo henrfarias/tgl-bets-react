@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import api from '../../services/axios';
 import createId from '../../helpers/createId';
 import notify from '../../helpers/toast';
 import { loadGames } from '../../store/reducers/games.reducer';
@@ -17,8 +18,7 @@ import GameWrapper, {
   AddToCart,
   Title,
 } from './styles';
-import ITypes from '../../Interfaces/ITypes';
-import IGames from '../../Interfaces/IGame';
+import IGame from '../../Interfaces/IGame';
 import IBet from '../../Interfaces/IBets';
 import sortNumbers from '../../helpers/sortNumbers';
 import { login } from '../../store/reducers/userLogged.reducer';
@@ -28,7 +28,8 @@ const Game: React.FC = () => {
   const [gameNumbers, setGameNumbers] = useState<number[]>([]);
   const [chosenNumbers, setChosenNumbers] = useState<number[]>([]);
   const [cartItems, setCartItems] = useState<IBet[]>([]);
-  const [currentGame, setCurrentGame] = useState<IGames>({
+  const [currentGame, setCurrentGame] = useState<IGame>({
+    id: 0,
     type: '',
     range: 0,
     price: 0,
@@ -42,7 +43,7 @@ const Game: React.FC = () => {
 
   const selectGame = (
     event: React.MouseEvent<HTMLButtonElement>,
-    button: IGames
+    button: IGame
   ) => {
     const numberArray: number[] = [];
     setCurrentGame(button);
@@ -86,11 +87,10 @@ const Game: React.FC = () => {
   const addToCart = () => {
     if (chosenNumbers.length === currentGame['max-number']) {
       const numbers = sortNumbers(chosenNumbers);
-      const id = createId();
       const { color, price, type } = currentGame;
       setCartItems((prevState) => [
         ...prevState,
-        { type, color, numbers, price, id },
+        { type, color, numbers, price, game_id: currentGame.id },
       ]);
       setChosenNumbers([]);
       notify('success', '🎉 Adicionado ao carrinho!');
@@ -102,8 +102,11 @@ const Game: React.FC = () => {
     );
   };
 
-  const deleteItemHandler = (id: number) => {
-    setCartItems((prevState) => prevState.filter((item) => item.id !== id));
+  const deleteItemHandler = (bet: IBet) => {
+    const targetIndex = cartItems.indexOf(bet);
+    setCartItems((prevState) =>
+      prevState.filter((element, index) => index !== targetIndex)
+    );
     notify('info', 'Item excluído com sucesso.');
   };
 
@@ -114,9 +117,8 @@ const Game: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch('./games.json');
-      const data: ITypes = await res.json();
-      const games = data.types;
+      const response = await api.get('games');
+      const games: IGame[] = await response.data.data;
       dispatch(loadGames(games));
     };
     if (!gamesList.length) fetchData();

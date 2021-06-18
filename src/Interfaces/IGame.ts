@@ -1,4 +1,5 @@
 interface IGames { 
+  id: number;
   type: string;
   description: string;
   range: number;

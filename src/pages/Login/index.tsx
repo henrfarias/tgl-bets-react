@@ -1,42 +1,41 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { ForwardButton, FormButton } from '../../components/Button';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { login } from '../../store/reducers/userLogged.reducer';
+import api from '../../services/axios'; 
 
+import { ForwardButton, FormButton } from '../../components/Button';
 import Input from '../../components/Input';
 import Card from '../../components/Layout/Card';
 import FormLayout from '../../components/Layout/FormLayout';
-import emailExists from '../../helpers/emailExists';
 import notify from '../../helpers/toast';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const users = useAppSelector((state) => state.users);
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const signUpHandler = () => {
     history.push('/register');
   };
 
-  const loginHandler = () => {
-    const userExists = emailExists(users, email);
+  const loginHandler = async () => {
     if (!email.match(/^[A-Za-z][\w.\d]+@\w+\.\w{2,3}(?:\.\w{2})?$/g)) {
       notify('error', 'Digite um email válido.');
       return;
     }
-    if (password.trim().length < 8) {
-      notify('error', 'Senha inválida. Sua senha tem 8 ou mais caracteres.');
+    if (password.trim().length < 6) {
+      notify('error', 'Senha inválida. Sua senha tem 6 ou mais caracteres.');
       return;
     }
-    if (!userExists.name) {
-      notify('error', 'Usuário não encontrado.');
-      return;
+    try {
+      const response = await api.post('/login', {
+        email: email,
+        password: password,
+      })
+      sessionStorage.setItem('token', `${response.data.token}`)
+      history.push('/history-games');
+    } catch (error) {
+      notify('error', `Credenciais inválidas`);
     }
-    history.push('/history-games');
-    dispatch(login({ id: userExists.id, name: userExists.name }));
   };
 
   const changeEmailHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

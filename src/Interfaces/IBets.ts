@@ -1,5 +1,5 @@
 interface IBet {
-  id: number;
+  game_id: number;
   type: string;
   numbers: number[];
   price: number;

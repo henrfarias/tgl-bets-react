@@ -1,10 +1,9 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { useHistory } from 'react-router-dom';
+import api from '../../services/axios';
 import createId from '../../helpers/createId';
 import notify from '../../helpers/toast';
 
-import IBets from '../../Interfaces/IBets';
 import CartItem from '../CartItem';
 import CartStyled, {
   CartItems,
@@ -12,20 +11,14 @@ import CartStyled, {
   SaveCartButton,
   Title,
 } from './styles';
-import { addGamesInHistory } from '../../store/reducers/users.reducer';
 import EmptyCart from '../EmptyCart';
+import ICart from '../../Interfaces/ICart';
 
-const Cart: React.FC<{
-  cartItems: IBets[];
-  onDelete: (id: number) => void;
-  minCartSave: number;
-}> = ({ cartItems, onDelete, minCartSave }) => {
+const Cart: React.FC<ICart> = ({ cartItems, onDelete, minCartSave }) => {
   const history = useHistory();
-  const currentUserId = useAppSelector((state) => state.logged.id);
-  const dispatch = useAppDispatch();
   let total = 0;
 
-  const saveCartItems = () => {
+  const saveCartItems = async () => {
     if (total < minCartSave) {
       notify('error', `O valor mínimo de compra é R$${minCartSave}`);
       return;
@@ -34,12 +27,15 @@ const Cart: React.FC<{
       notify('error', 'Escolha o jogo para começar.');
       return;
     }
-    cartItems.map(
-      (item) => (item.date = new Date().toISOString())
-    );
-    dispatch(addGamesInHistory({ id: currentUserId, bets: cartItems }));
-    notify('success', '🎉 Jogos salvos!');
-    history.push('/history-games');
+    try {
+      await api.post('bets', {
+        bets: cartItems,
+      }) 
+      notify('success', '🎉 Jogos salvos!');
+      history.push('/history-games');
+    } catch (error) {
+      notify('error', 'não foi possível fazer sua aposta, sinto muito. =(')
+    }
   };
 
   return (

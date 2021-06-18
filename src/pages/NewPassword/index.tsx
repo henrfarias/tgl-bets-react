@@ -20,8 +20,8 @@ const NewPassword: React.FC = () => {
 
   const requestHandler = async () => {
     console.log(token);
-    if(passwordEntered.trim().length < 8) {
-      notify('error', 'Sua senha precisa de 8 ou mais caracteres');
+    if(passwordEntered.trim().length < 6) {
+      notify('error', 'Sua senha precisa de 6 ou mais caracteres');
       return;
     }
     await api.put('/forgot-password', {

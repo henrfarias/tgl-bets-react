@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import { useAppSelector, useAppDispatch } from '../../store/hooks';
-import { registerUser } from '../../store/reducers/users.reducer';
+import api from '../../services/axios';
 
 import { FormButton, BackButton } from '../../components/Button';
 import Input from '../../components/Input';
 import Card from '../../components/Layout/Card';
 import FormLayout from '../../components/Layout/FormLayout';
-import emailExists from '../../helpers/emailExists';
-import createId from '../../helpers/createId';
-import IUser from '../../Interfaces/IUser';
 import notify from '../../helpers/toast';
 
 const Register: React.FC = () => {
@@ -17,42 +13,35 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const users = useAppSelector((state) => state.users);
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const backHistoryHandler = () => {
     history.goBack();
   };
 
-  const registerHandler = () => {
+  const registerHandler = async () => {
     if (password.trim().length < 8) {
       notify('error', 'Sua senha precisa ter 8 ou mais caracteres.');
       return;
     }
-
     if (
       name.trim() === '' ||
       !email.match(/^[A-Za-z][\w.\d]+@\w+\.\w{2,3}(?:\.\w{2})?$/g)
     ) {
-      notify('error', 'Preencha corretamente os dados.');
+      notify('error', 'Insira um email válido.');
       return;
     }
-    const newUser: IUser = {
-      id: createId(),
-      name,
-      email,
-      password,
-      history: [],
-    };
-    if (emailExists(users, newUser.email).name) {
-      notify('error', 'Email existente.');
-      return;
+    try {
+      await api.post('/register', {
+        username: name,
+        email: email,
+        password: password
+      });
+      history.push('/');
+      notify('success', 'Usuário cadastrado.');
+    } catch (error) {
+      notify('error', `deu ruim`);
     }
-
-    dispatch(registerUser(newUser));
-    history.push('/');
-    notify('success', 'Usuário cadastrado.');
   };
 
   const changeNameHandler = (event: React.ChangeEvent<HTMLInputElement>) => {

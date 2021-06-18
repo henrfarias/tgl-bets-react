@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import axios from '../../services/axios';
+import api from '../../services/axios';
 import notify from '../../helpers/toast';
 
 import { FormButton, BackButton } from '../../components/Button';
@@ -22,7 +22,7 @@ const ResetPassword: React.FC = () => {
       return;
     }
     try {
-      await axios
+      await api
         .post('/forgot-password', {
           email: emailEntered,
         })
@@ -33,7 +33,6 @@ const ResetPassword: React.FC = () => {
         );
     } catch (error) {
       notify('error', `Este email não está cadastrado no sistema =(`);
-      return;
     }
   };
 

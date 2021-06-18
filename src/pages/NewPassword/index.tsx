@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import axios from '../../services/axios';
+import api from '../../services/axios';
 import notify from '../../helpers/toast';
 
 import { FormButton, BackButton } from '../../components/Button';
@@ -20,11 +20,11 @@ const NewPassword: React.FC = () => {
 
   const requestHandler = async () => {
     console.log(token);
-    if(passwordEntered.length < 8) {
+    if(passwordEntered.trim().length < 8) {
       notify('error', 'Sua senha precisa de 8 ou mais caracteres');
       return;
     }
-    await axios.put('/forgot-password', {
+    await api.put('/forgot-password', {
       password: passwordEntered,
       token: token,
     });

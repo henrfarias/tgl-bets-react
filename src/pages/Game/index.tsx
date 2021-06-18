@@ -23,6 +23,7 @@ import IGame from '../../Interfaces/IGame';
 import IBet from '../../Interfaces/IBets';
 import sortNumbers from '../../helpers/sortNumbers';
 import 'react-toastify/dist/ReactToastify.css';
+import { userLoggedIn } from '../../store/reducers/users.reducer';
 
 const Game: React.FC = () => {
   const [gameNumbers, setGameNumbers] = useState<number[]>([]);
@@ -41,6 +42,7 @@ const Game: React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const gamesList = useAppSelector((state) => state.games);
+  const username = useAppSelector((state) => state.user.username);
 
   const selectGame = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -119,6 +121,27 @@ const Game: React.FC = () => {
     };
     if (!gamesList.length) fetchData();
   }, [dispatch, gamesList, history]);
+
+  useEffect(() => {
+    if(!sessionStorage.getItem('token')) {
+      history.push('/')
+      return;
+    }
+    try {
+      const fetchUser = async () => {
+        const response = await api.get('/users', {
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+          }
+        })
+        const user = response.data; 
+        dispatch(userLoggedIn(user));
+      }
+      if(!username) fetchUser();
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  }, [dispatch, history, username])
 
   return (
     <>

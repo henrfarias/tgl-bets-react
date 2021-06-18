@@ -28,7 +28,6 @@ const Cart: React.FC<ICart> = ({ cartItems, onDelete, minCartSave }) => {
       return;
     }
     try {
-      console.log(sessionStorage.getItem('token'));
       const bets = cartItems.map(bet => { 
         return {
           game_id: bet.game_id,
@@ -39,12 +38,17 @@ const Cart: React.FC<ICart> = ({ cartItems, onDelete, minCartSave }) => {
       await api.post('/bets', {
           bets: bets  
       },
+      {
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+        }
+      }
       );
       notify('success', '🎉 Jogos salvos!');
       history.push('/history-games');
     } catch (error) {
-      console.log(error.toJSON());
       notify('error', 'não foi possível fazer sua aposta, sinto muito. =(')
+      console.log(error.message);
     }
   };
 

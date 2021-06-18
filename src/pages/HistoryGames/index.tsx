@@ -17,14 +17,14 @@ import HistoryGamesStyled, {
 import IGame from '../../Interfaces/IGame';
 import IBet from '../../Interfaces/IBets';
 import Empty from '../../components/Empty';
-import { userLogged } from '../../store/reducers/users.reducer';
+import { userLoggedIn } from '../../store/reducers/users.reducer';
 
 const HistoryGames: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState('');
   const [filteredGames, setFilteredGames] = useState<IBet[]>([]);
   const dispatch = useAppDispatch();
   const gamesList = useAppSelector((state) => state.games);
-  const userLoggedIn = useAppSelector((state) => state.user );
+  const userLogged = useAppSelector((state) => state.user );
   const history = useHistory();
 
   const newBetHandler = () => {
@@ -40,12 +40,20 @@ const HistoryGames: React.FC = () => {
   };
 
   useEffect(() => {
+    if(!sessionStorage.getItem('token')) {
+      history.push('/')
+      return;
+    }
     try {
       const fetchUser = async () => {
-        const response = await api.get('/users')
+        const response = await api.get('/users', {
+          headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+          }
+        })
         const user = response.data; 
-        dispatch(userLogged(user));
-       }
+        dispatch(userLoggedIn(user));
+      }
       fetchUser();
     } catch (err) {
       throw new Error(err.message);
@@ -53,10 +61,10 @@ const HistoryGames: React.FC = () => {
   }, [dispatch, history])
 
   useEffect(() => {
-    if(!userLoggedIn.email)
+    if(!userLogged.email)
       return;
     const games =
-      userLoggedIn.bets?.filter((bet) => {
+      userLogged.bets?.filter((bet) => {
         if (currentFilter === '') return true;
         if (bet.game?.type === currentFilter) {
           return true;
@@ -64,7 +72,7 @@ const HistoryGames: React.FC = () => {
         return false;
       }) || [];
     setFilteredGames(games);
-  }, [currentFilter, userLoggedIn]);
+  }, [currentFilter, userLogged]);
 
   useEffect(() => {
     const fetchGames = async () => {

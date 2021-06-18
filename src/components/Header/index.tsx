@@ -1,5 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useAppDispatch } from '../../store/hooks';
+import { userLoggedOut } from '../../store/reducers/users.reducer';
 
 import HeaderStyled, {
   Logo,
@@ -9,14 +11,15 @@ import HeaderStyled, {
 } from './styles';
 
 const Header: React.FC = () => {
+  const dispatch = useAppDispatch();
   const history = useHistory();
-
   const toAccountHandler = () => {
     history.push('/reset-password');
   };
   
   const toLogoutHandler = () => {
     sessionStorage.setItem('token', '');
+    dispatch(userLoggedOut());
     history.push('/');
   };
 

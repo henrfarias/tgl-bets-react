@@ -20,8 +20,8 @@ const Register: React.FC = () => {
   };
 
   const registerHandler = async () => {
-    if (password.trim().length < 8) {
-      notify('error', 'Sua senha precisa ter 8 ou mais caracteres.');
+    if (password.trim().length < 6) {
+      notify('error', 'Sua senha precisa ter 6 ou mais caracteres.');
       return;
     }
     if (

@@ -5,6 +5,7 @@ import HistoryGames from '../pages/HistoryGames';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
 import ResetPassword from '../pages/ResetPassword';
+import NewPassword from '../pages/NewPassword';
 
 const Routes = () => {
   const statusLog = localStorage.getItem('logged');
@@ -16,7 +17,8 @@ const Routes = () => {
       <Switch>
         <Route path='/' component={Login} exact />
         <Route path='/register' component={Register} />
-        <Route path='/reset-password' component={ResetPassword} />
+        <Route path='/reset-password' component={ResetPassword}  exact />
+        <Route path='/reset-password/new-password' exact component={NewPassword}/>
         <Route path='/history-games'>
           {loggin ? <HistoryGames /> : <Redirect to='/' exact />}
         </Route>

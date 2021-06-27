@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import api from '../../services/axios'; 
+import api from '../../services/axios';
 
 import { ForwardButton, FormButton } from '../../components/Button';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import Input from '../../components/Input';
 import Card from '../../components/Layout/Card';
 import FormLayout from '../../components/Layout/FormLayout';
 import notify from '../../helpers/toast';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { isLoading, isntLoading } from '../../store/reducers/load.reducer';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const dispatch = useAppDispatch();
+  const loading = useAppSelector((state) => state.load);
   const history = useHistory();
 
   const signUpHandler = () => {
@@ -27,13 +32,16 @@ const Login: React.FC = () => {
       return;
     }
     try {
+      dispatch(isLoading());
       const response = await api.post('/login', {
         email: email,
         password: password,
-      })
-      sessionStorage.setItem('token', `${response.data.token}`)
+      });
+      sessionStorage.setItem('token', `${response.data.token}`);
+      dispatch(isntLoading());
       history.push('/history-games');
     } catch (error) {
+      dispatch(isntLoading());
       notify('error', `Credenciais inválidas`);
     }
   };
@@ -58,7 +66,11 @@ const Login: React.FC = () => {
           placeholder='Password'
         />
         <Link to='/reset-password'>I forget my password</Link>
-        <FormButton onClick={loginHandler}>Log in</FormButton>
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <FormButton onClick={loginHandler}>Log in</FormButton>
+        )}
       </Card>
       <ForwardButton onClick={signUpHandler}>Sign Up</ForwardButton>
     </FormLayout>

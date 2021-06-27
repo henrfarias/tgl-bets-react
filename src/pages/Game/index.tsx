@@ -10,6 +10,7 @@ import Cart from '../../components/Cart';
 import GameButton from '../../components/GameButton';
 import GameNumber from '../../components/GameNumber';
 import Layout from '../../components/Layout';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import GameWrapper, {
   ChooseGame,
   Description,
@@ -24,6 +25,7 @@ import IBet from '../../Interfaces/IBets';
 import sortNumbers from '../../helpers/sortNumbers';
 import 'react-toastify/dist/ReactToastify.css';
 import { userLoggedIn } from '../../store/reducers/users.reducer';
+import { isLoading, isntLoading } from '../../store/reducers/load.reducer';
 
 const Game: React.FC = () => {
   const [gameNumbers, setGameNumbers] = useState<number[]>([]);
@@ -43,6 +45,7 @@ const Game: React.FC = () => {
   const dispatch = useAppDispatch();
   const gamesList = useAppSelector((state) => state.games);
   const username = useAppSelector((state) => state.user.username);
+  const loading = useAppSelector((state) => state.load);
 
   const selectGame = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -118,81 +121,89 @@ const Game: React.FC = () => {
       const response = await api.get('games');
       const games: IGame[] = await response.data.data;
       dispatch(loadGames(games));
+      dispatch(isntLoading());
     };
-    if (!gamesList.length) fetchData();
+    if (!gamesList.length) {
+      fetchData();
+      dispatch(isLoading());
+    }
   }, [dispatch, gamesList, history]);
 
   useEffect(() => {
-    if(!sessionStorage.getItem('token')) {
-      history.push('/')
+    if (!sessionStorage.getItem('token')) {
+      history.push('/');
       return;
     }
     try {
       const fetchUser = async () => {
         const response = await api.get('/users', {
           headers: {
-            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-          }
-        })
-        const user = response.data; 
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+        });
+        const user = response.data;
         dispatch(userLoggedIn(user));
-      }
-      if(!username) fetchUser();
+      };
+      if (!username) fetchUser();
     } catch (err) {
       throw new Error(err.message);
     }
-  }, [dispatch, history, username])
+  }, [dispatch, history, username]);
 
   return (
     <>
       <Layout>
-        <GameWrapper>
-          <Title>
-            <strong>New Bet</strong> {currentGame.type ? 'for' : ''}{' '}
-            <span>{currentGame.type}</span>
-          </Title>
-          <ChooseGame>
-            <h3>Choose a game</h3>
-            {gamesList.map((button) => {
-              const active = button.type === currentGame.type;
-              return (
-                <GameButton
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          <GameWrapper>
+            <Title>
+              <strong>New Bet</strong> {currentGame.type ? 'for' : ''}{' '}
+              <span>{currentGame.type}</span>
+            </Title>
+            <ChooseGame>
+              <h3>Choose a game</h3>
+              {gamesList.map((button) => {
+                const active = button.type === currentGame.type;
+                return (
+                  <GameButton
+                    key={createId()}
+                    game={button}
+                    onClick={(event) => selectGame(event, button)}
+                    current={active}
+                  />
+                );
+              })}
+            </ChooseGame>
+            <Description>
+              {currentGame.type && <h3>Fill your bet</h3>}
+              {currentGame.description && <p>{currentGame.description}</p>}
+            </Description>
+            <GameBoard>
+              {gameNumbers.map((number) => (
+                <GameNumber
                   key={createId()}
-                  game={button}
-                  onClick={(event) => selectGame(event, button)}
-                  current={active}
+                  index={number}
+                  color={currentGame.color}
+                  addNumber={addNumber}
+                  defaultChecked={chosenNumbers.includes(number)}
                 />
-              );
-            })}
-          </ChooseGame>
-          <Description>
-            {currentGame.type && <h3>Fill your bet</h3>}
-            {currentGame.description && <p>{currentGame.description}</p>}
-          </Description>
-          <GameBoard>
-            {gameNumbers.map((number) => (
-              <GameNumber
-                key={createId()}
-                index={number}
-                color={currentGame.color}
-                addNumber={addNumber}
-                defaultChecked={chosenNumbers.includes(number)}
-              />
-            ))}
-          </GameBoard>
-          {currentGame.type && (
-            <GameFunctions>
-              <ButtonFunction onClick={completeGame}>
-                Complete Game
-              </ButtonFunction>
-              <ButtonFunction onClick={clearGame}>Clear Game</ButtonFunction>
-              <AddToCart onClick={addToCart}>
-                <img src='./icons/cart.svg' alt='adicionar ao carrinho' />
-                Add to cart
-              </AddToCart>
-            </GameFunctions>
-          )}
-        </GameWrapper>
+              ))}
+            </GameBoard>
+            {currentGame.type && (
+              <GameFunctions>
+                <ButtonFunction onClick={completeGame}>
+                  Complete Game
+                </ButtonFunction>
+                <ButtonFunction onClick={clearGame}>Clear Game</ButtonFunction>
+                <AddToCart onClick={addToCart}>
+                  <img src='./icons/cart.svg' alt='adicionar ao carrinho' />
+                  Add to cart
+                </AddToCart>
+              </GameFunctions>
+            )}
+          </GameWrapper>
+        )}
         <Cart
           cartItems={cartItems}
           onDelete={deleteItemHandler}

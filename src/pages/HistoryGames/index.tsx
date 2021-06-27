@@ -6,6 +6,7 @@ import { loadGames } from '../../store/reducers/games.reducer';
 import BetCard from '../../components/BetCard';
 import GameButton from '../../components/GameButton';
 import Layout from '../../components/Layout';
+import LoadingSpinner from '../../components/LoadingSpinner';
 import api from '../../services/axios';
 
 import HistoryGamesStyled, {
@@ -18,15 +19,16 @@ import IGame from '../../Interfaces/IGame';
 import IBet from '../../Interfaces/IBets';
 import Empty from '../../components/Empty';
 import { userLoggedIn } from '../../store/reducers/users.reducer';
+import { isLoading, isntLoading } from '../../store/reducers/load.reducer';
 
 const HistoryGames: React.FC = () => {
   const [currentFilter, setCurrentFilter] = useState('');
   const [filteredGames, setFilteredGames] = useState<IBet[]>([]);
   const dispatch = useAppDispatch();
   const gamesList = useAppSelector((state) => state.games);
-  const userLogged = useAppSelector((state) => state.user );
+  const userLogged = useAppSelector((state) => state.user);
+  const loading = useAppSelector((state) => state.load);
   const history = useHistory();
-
   const newBetHandler = () => {
     history.push('/game');
   };
@@ -40,29 +42,31 @@ const HistoryGames: React.FC = () => {
   };
 
   useEffect(() => {
-    if(!sessionStorage.getItem('token')) {
-      history.push('/')
+    if (!sessionStorage.getItem('token')) {
+      history.push('/');
       return;
     }
     try {
+      dispatch(isLoading());
       const fetchUser = async () => {
         const response = await api.get('/users', {
           headers: {
-            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-          }
-        })
-        const user = response.data; 
+            Authorization: `Bearer ${sessionStorage.getItem('token')}`,
+          },
+        });
+        const user = response.data;
         dispatch(userLoggedIn(user));
-      }
+        dispatch(isntLoading());
+      };
       fetchUser();
     } catch (err) {
+      dispatch(isntLoading());
       throw new Error(err.message);
     }
-  }, [dispatch, history])
+  }, [dispatch, history]);
 
   useEffect(() => {
-    if(!userLogged.email)
-      return;
+    if (!userLogged.email) return;
     const games =
       userLogged.bets?.filter((bet) => {
         if (currentFilter === '') return true;
@@ -76,10 +80,10 @@ const HistoryGames: React.FC = () => {
 
   useEffect(() => {
     const fetchGames = async () => {
-      const response = await api.get('games')
+      const response = await api.get('games');
       const games: IGame[] = await response.data.data;
-      dispatch(loadGames(games))
-    }
+      dispatch(loadGames(games));
+    };
     if (!gamesList.length) fetchGames();
   }, [dispatch, gamesList]);
 
@@ -103,16 +107,20 @@ const HistoryGames: React.FC = () => {
             );
           })}
         </FilterWrapper>
-        <BetsWrapper>
-          {filteredGames.length === 0 && <Empty />}
-          {filteredGames.map((bet) => (
-            <BetCard key={bet.id} bet={bet} />
-          ))}
-        </BetsWrapper>
+       {
+        loading ? 
+          <LoadingSpinner /> :  
+          <BetsWrapper>
+              {filteredGames.length === 0 && <Empty />}
+              {filteredGames.map((bet) => (
+                <BetCard key={bet.id} bet={bet} />
+              ))}
+            </BetsWrapper>
+       } 
       </HistoryGamesStyled>
-      <NewBetButton onClick={newBetHandler}>
-        New Bet <img src='./icons/arrow-right.svg' alt='New bet' />
-      </NewBetButton>
+        <NewBetButton onClick={newBetHandler}>
+          New Bet <img src='./icons/arrow-right.svg' alt='New bet' />
+        </NewBetButton>
     </Layout>
   );
 };
